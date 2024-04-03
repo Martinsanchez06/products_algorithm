@@ -4,7 +4,7 @@ import {pool} from './db.js'
 const app = express()
 
 app.get('/data', async (req, res) => {
-    const [result] = await pool.query('select * from products')
+    const [result] = await pool.query('select * from CosmeticsProducts')
     res.json(result)
 })
 

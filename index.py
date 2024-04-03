@@ -1,32 +1,5 @@
 import requests
 import pandas as pd
-import mysql.connector
-import json
-from flask_cors import CORS
-
-conexion = mysql.connector.connect(user='root', 
-                                   password='rootPassword',
-                                   host='localhost', 
-                                   database='productsTestDB', 
-                                   port='3306')
-cursor = conexion.cursor()
-
-# Realizar una consulta SQL
-cursor.execute("SELECT * FROM netflix_titles")
-
-# Obtener todos los resultados
-resultados = cursor.fetchall()
-
-# Obtener los nombres de las columnas
-columnas = cursor.description
-nombres_de_columnas = [columna[0] for columna in columnas]
-
-# Convertir los resultados a un formato JSON
-# Crear una lista de diccionarios, donde cada diccionario representa una fila
-datos_json = [dict(zip(nombres_de_columnas, fila)) for fila in resultados]
-
-# Convertir la lista de diccionarios a una cadena JSON
-data = json.dumps(datos_json, indent=4)
 
 def convertir_respuesta_api(respuesta_api):
     # Procesa la respuesta de la API y la convierte en un diccionario
@@ -59,10 +32,43 @@ def solicitar_recomendaciones():
     data = df.to_dict('records')  # Converts the DataFrame back to a list of dictionaries
     
     dataJSON = {
-        'user_name': 'usuario123',
-        'product_user_input': product_user_input,
-        'product_ID': 'Product_Name',
-        'dataset': data  # Now includes 'Relevance' column
+      'user_name': "usuario123",
+      'product_user_input': product_user_input,
+      'product_ID': 'product_name',
+      'dataset': data,
+      'price_column': "price",
+      'category_discounts': {
+        "Carlton London": [5, 20],
+        "Denver": [5, 20],
+        "Engage": [5, 20],
+        "Envy": [5, 20],
+        "FOGG": [5, 20],
+        "KS WOMAN": [5, 20],
+        "LA' French": [5, 20],
+        "Ahava": [5, 20],
+        "Alpha Skin Care": [5, 20],
+        "American Crew": [5, 20],
+        "Ariana Grande": [5, 20],
+        "Babo Botanicals": [5, 20],
+        "Baxter of California": [5, 20],
+        "Beast": [5, 20],
+        "Beekman 1802": [5, 20],
+        "Bliss": [5, 20],
+        "boscia": [5, 20],
+        "Briogeo": [5, 20],
+        "Bushbalm": [5, 20],
+        "Buttah Skin": [5, 20],
+        "Cetaphil": [5, 20],
+        "Clarins": [5, 20],
+        "Clinique": [5, 20],
+        "Coco & Eve": [5, 20],
+        "Da Bomb": [5, 20],
+        "Daily Concepts": [5, 20],
+        "Dermalogica": [5, 20],
+        "Differin": [5, 20],
+        "Dionis": [5, 20],
+        "Dr Teal's": [5, 20],
+      },
     }
 
     # Initial POST request
@@ -71,28 +77,6 @@ def solicitar_recomendaciones():
         recommended_shirts = pd.DataFrame(response.json())
         print("Recomendaciones de camisetas:")
         print(recommended_shirts)
-
-        # # Assuming products have a unique identifier column, e.g., 'Product_ID'
-        # chosen_product_id = input("Seleccione el ID del producto de la lista: ")
-
-        # # Assuming you also send back IDs of all recommended products as previous recommendations
-        # previous_recommendations = recommended_shirts['Product_ID'].tolist()
-
-        # # Prepare and send the follow-up POST request with chosen_product_id and previous_recommendations
-        # follow_up_dataJSON = {
-        #     'user_name': 'usuario123',
-        #     'chosen_product_id': chosen_product_id,
-        #     'previous_recommendations': previous_recommendations,
-        #     'dataset': data  # Or however you manage the dataset across requests
-        # }
-
-        # response = requests.post(url, json=follow_up_dataJSON)
-        # if response.status_code == 200:
-        #     new_recommended_shirts = pd.DataFrame(response.json())
-        #     print("Nuevas recomendaciones de camisetas basadas en su elección:")
-        #     print(new_recommended_shirts)
-        # else:
-        #     print("Error al enviar la segunda solicitud:", response.status_code)
     else:
         print("Error al enviar la solicitud:", response.status_code)
 
